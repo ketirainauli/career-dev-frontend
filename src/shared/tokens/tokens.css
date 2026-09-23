@@ -1,0 +1,40 @@
+:root {
+  /* Color */
+  --color-primary: #4F46E5;
+  --color-primary-hover: #4338CA;
+  --color-text: #111827;
+  --color-text-muted: #6B7280;
+  --color-border: #D1D5DB;
+  --color-border-focus: #4F46E5;
+  --color-error: #DC2626;
+  --color-error-bg: #FEF2F2;
+  --color-disabled-bg: #F3F4F6;
+  --color-disabled-text: #9CA3AF;
+  --color-bg: #FFFFFF;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+
+  /* Typography */
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 20px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Input sizing */
+  --input-height: 44px;
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
