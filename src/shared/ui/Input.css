@@ -8,6 +8,7 @@
   color: var(--color-text);
   background-color: var(--color-bg);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
 }
 
 .input::placeholder {
