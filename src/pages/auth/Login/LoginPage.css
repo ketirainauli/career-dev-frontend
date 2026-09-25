@@ -44,3 +44,6 @@
 .auth-card__link-row a:hover {
   text-decoration: underline;
 }
+.auth-card__banner {
+  margin-bottom: var(--space-4);
+}
