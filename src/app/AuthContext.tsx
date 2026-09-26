@@ -1,6 +1,8 @@
+import { onUnauthorized } from '../shared/api/client';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { meRequest, type User } from '../shared/api/auth';
 import { getToken, setToken as saveToken, removeToken } from '../shared/lib/token';
+
 
 type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -34,6 +36,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         removeToken();
         setStatus('unauthenticated');
       });
+  }, []);
+  
+  useEffect(() => {
+    onUnauthorized(() => {
+      removeToken();
+      setUser(null);
+      setStatus('unauthenticated');
+    });
   }, []);
 
   const login = (token: string, loggedInUser: User) => {

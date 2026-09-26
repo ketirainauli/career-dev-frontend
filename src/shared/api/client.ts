@@ -19,6 +19,12 @@ export class ApiRequestError extends Error {
     this.status = status;
   }
 }
+type UnauthorizedListener = () => void;
+let unauthorizedListener: UnauthorizedListener | null = null;
+
+export function onUnauthorized(listener: UnauthorizedListener) {
+  unauthorizedListener = listener;
+}
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -50,8 +56,13 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     data = null;
   }
 
-  if (!response.ok) {
+    if (!response.ok) {
     const errorBody = (data as ApiError) ?? { message: 'Something went wrong', code: 'UNKNOWN_ERROR' };
+
+    if (response.status === 401 && errorBody.code === 'TOKEN_EXPIRED') {
+      unauthorizedListener?.();
+    }
+
     throw new ApiRequestError(response.status, errorBody);
   }
 
