@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCategory, getProducts } from '../../shared/api/catalog';
 import { buildProductsQuery } from '../../shared/lib/catalogParams';
 import { CATEGORY_SLUG } from '../../shared/config/category';
+import { FilterPanel } from '../../shared/ui/FilterPanel/FilterPanel';
 
 export function CatalogPage() {
   const [searchParams] = useSearchParams();
@@ -20,27 +21,33 @@ export function CatalogPage() {
   });
 
   return (
-    <main style={{ padding: '2rem' }}>
-      <h1>{categoryQuery.data?.name ?? 'Loading category...'}</h1>
+    <main style={{ padding: '2rem', display: 'flex', gap: '2rem' }}>
+      <aside>
+        {categoryQuery.data ? <FilterPanel category={categoryQuery.data} /> : <p>Loading filters...</p>}
+      </aside>
 
-      {productsQuery.isLoading ? <p>Loading products...</p> : null}
-      {productsQuery.isError ? <p>Failed to load products.</p> : null}
+      <div style={{ flex: 1 }}>
+        <h1>{categoryQuery.data?.name ?? 'Loading category...'}</h1>
 
-      {productsQuery.data ? (
-        <div>
-          <p>
-            Total: {productsQuery.data.total} — Page {productsQuery.data.page} of{' '}
-            {productsQuery.data.totalPages}
-          </p>
-          <ul>
-            {productsQuery.data.items.map((product) => (
-              <li key={product.id}>
-                {product.title} — {product.price} {product.currency}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
+        {productsQuery.isLoading ? <p>Loading products...</p> : null}
+        {productsQuery.isError ? <p>Failed to load products.</p> : null}
+
+        {productsQuery.data ? (
+          <div>
+            <p>
+              Total: {productsQuery.data.total} — Page {productsQuery.data.page} of{' '}
+              {productsQuery.data.totalPages}
+            </p>
+            <ul>
+              {productsQuery.data.items.map((product) => (
+                <li key={product.id}>
+                  {product.title} — {product.price} {product.currency}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
     </main>
   );
 }
