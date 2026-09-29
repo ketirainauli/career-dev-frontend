@@ -1,3 +1,4 @@
+import { SortDropdown } from '../../shared/ui/SortDropdown';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getCategory, getProducts } from '../../shared/api/catalog';
@@ -28,6 +29,8 @@ export function CatalogPage() {
 
       <div style={{ flex: 1 }}>
         <h1>{categoryQuery.data?.name ?? 'Loading category...'}</h1>
+
+        <SortDropdown />
 
         {productsQuery.isLoading ? <p>Loading products...</p> : null}
         {productsQuery.isError ? <p>Failed to load products.</p> : null}
