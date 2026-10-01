@@ -1,3 +1,4 @@
+import { SearchBox } from '../../shared/ui/SearchBox';
 import { SortDropdown } from '../../shared/ui/SortDropdown';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -29,7 +30,7 @@ export function CatalogPage() {
 
       <div style={{ flex: 1 }}>
         <h1>{categoryQuery.data?.name ?? 'Loading category...'}</h1>
-
+<SearchBox />
         <SortDropdown />
 
         {productsQuery.isLoading ? <p>Loading products...</p> : null}
