@@ -1,3 +1,5 @@
+import './CatalogPage.css';
+import { ProductCard } from '../../shared/ui/ProductCard';
 import { Pagination } from '../../shared/ui/Pagination';
 import { SearchBox } from '../../shared/ui/SearchBox';
 import { SortDropdown } from '../../shared/ui/SortDropdown';
@@ -43,13 +45,11 @@ export function CatalogPage() {
               Total: {productsQuery.data.total} — Page {productsQuery.data.page} of{' '}
               {productsQuery.data.totalPages}
             </p>
-            <ul>
-              {productsQuery.data.items.map((product) => (
-                <li key={product.id}>
-                  {product.title} — {product.price} {product.currency}
-                </li>
-              ))}
-            </ul>
+           <div className="product-grid">
+  {productsQuery.data.items.map((product) => (
+    <ProductCard key={product.id} product={product} />
+  ))}
+</div>
             <Pagination
   page={productsQuery.data.page}
   totalPages={productsQuery.data.totalPages}
