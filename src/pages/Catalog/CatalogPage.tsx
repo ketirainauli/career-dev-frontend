@@ -1,3 +1,4 @@
+import { Pagination } from '../../shared/ui/Pagination';
 import { SearchBox } from '../../shared/ui/SearchBox';
 import { SortDropdown } from '../../shared/ui/SortDropdown';
 import { useSearchParams } from 'react-router-dom';
@@ -49,6 +50,12 @@ export function CatalogPage() {
                 </li>
               ))}
             </ul>
+            <Pagination
+  page={productsQuery.data.page}
+  totalPages={productsQuery.data.totalPages}
+  total={productsQuery.data.total}
+  limit={productsQuery.data.limit}
+/>
           </div>
         ) : null}
       </div>
