@@ -1,4 +1,5 @@
 import './CatalogPage.css';
+import { QuickToggles } from '../../shared/ui/QuickToggles';
 import { ProductCard } from '../../shared/ui/ProductCard';
 import { Pagination } from '../../shared/ui/Pagination';
 import { SearchBox } from '../../shared/ui/SearchBox';
@@ -7,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getCategory, getProducts } from '../../shared/api/catalog';
 import { buildProductsQuery } from '../../shared/lib/catalogParams';
-import { CATEGORY_SLUG } from '../../shared/config/category';
+import { CATEGORY_SLUG, CATEGORY_DISPLAY_NAME } from '../../shared/config/category';
 import { FilterPanel } from '../../shared/ui/FilterPanel/FilterPanel';
 
 export function CatalogPage() {
@@ -32,8 +33,9 @@ export function CatalogPage() {
       </aside>
 
       <div style={{ flex: 1 }}>
-        <h1>{categoryQuery.data?.name ?? 'Loading category...'}</h1>
+       <h1>{CATEGORY_DISPLAY_NAME}</h1>
 <SearchBox />
+<QuickToggles />
         <SortDropdown />
 
         {productsQuery.isLoading ? <p>Loading products...</p> : null}
