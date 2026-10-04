@@ -41,9 +41,11 @@ export function CatalogPage() {
 
       <div style={{ flex: 1 }}>
         <h1>{CATEGORY_DISPLAY_NAME}</h1>
+        <div className="catalog-toolbar">
         <SearchBox />
         <QuickToggles />
         <SortDropdown />
+        </div>
 
         {productsQuery.isPending ? (
           <div className="product-grid">

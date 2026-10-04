@@ -7,3 +7,10 @@
   text-align: center;
   padding: var(--space-8) 0;
 }
+.catalog-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
