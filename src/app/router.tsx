@@ -5,6 +5,7 @@ import { ForgotPasswordPage } from '../pages/auth/ForgotPassword/ForgotPasswordP
 import { DashboardPage } from '../pages/Dashboard/DashboardPage';
 import { CatalogPage } from '../pages/Catalog/CatalogPage';
 import { ProductDetailPage } from '../pages/ProductDetail/ProductDetailPage'
+import { ProfilePage } from '../pages/Profile/ProfilePage';
 import { ProtectedRoute } from './ProtectedRoute';
 
 
@@ -20,6 +21,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <DashboardPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/profile',
+    element: (
+      <ProtectedRoute>
+        <ProfilePage />
       </ProtectedRoute>
     ),
   },
