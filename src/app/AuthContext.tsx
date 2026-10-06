@@ -11,6 +11,7 @@ interface AuthContextValue {
   user: User | null;
   login: (token: string, user: User) => void;
   logout: () => void;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -57,9 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setStatus('unauthenticated');
   };
-
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+  };
   return (
-    <AuthContext.Provider value={{ status, user, login, logout }}>
+    <AuthContext.Provider value={{ status, user, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
