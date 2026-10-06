@@ -4,6 +4,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone: string | null;
+  city: string | null;
+  address: string | null;
+  createdAt: string;
 }
 
 export interface AuthResponse {
@@ -28,6 +32,24 @@ export function loginRequest(data: { email: string; password: string }) {
 export function meRequest(token: string) {
   return apiRequest<{ user: User }>('/auth/me', {
     method: 'GET',
+    token,
+  });
+}
+
+export interface UpdateMePayload {
+  currentPassword: string;
+  name?: string;
+  email?: string;
+  newPassword?: string;
+  phone?: string;
+  city?: string;
+  address?: string;
+}
+
+export function updateMeRequest(payload: UpdateMePayload, token: string) {
+  return apiRequest<{ user: User }>('/auth/me', {
+    method: 'PATCH',
+    body: payload,
     token,
   });
 }
