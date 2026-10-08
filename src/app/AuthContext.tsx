@@ -1,4 +1,4 @@
-import { onUnauthorized } from '../shared/api/client';
+import { onUnauthorized, ApiRequestError } from '../shared/api/client';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { meRequest, type User } from '../shared/api/auth';
 import { getToken, setToken as saveToken, removeToken } from '../shared/lib/token';
@@ -33,8 +33,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(data.user);
         setStatus('authenticated');
       })
-      .catch(() => {
-        removeToken();
+      .catch((err) => {
+        if (err instanceof ApiRequestError && err.status === 401) {
+          removeToken();
+        }
         setStatus('unauthenticated');
       });
   }, []);
