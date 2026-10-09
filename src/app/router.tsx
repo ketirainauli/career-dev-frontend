@@ -7,6 +7,7 @@ import { CatalogPage } from '../pages/Catalog/CatalogPage';
 import { ProductDetailPage } from '../pages/ProductDetail/ProductDetailPage';
 import { ProfilePage } from '../pages/Profile/ProfilePage';
 import { ProtectedRoute } from './ProtectedRoute';
+import { CartPage } from '../pages/Cart/CartPage';
 import { Layout } from './Layout';
 
 export const router = createBrowserRouter([
@@ -32,6 +33,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+            {
+        path: '/cart',
+        element: (
+          <ProtectedRoute>
+            <CartPage />
           </ProtectedRoute>
         ),
       },
