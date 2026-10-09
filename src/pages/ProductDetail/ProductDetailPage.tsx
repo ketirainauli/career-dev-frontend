@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getProduct } from '../../shared/api/catalog';
 import { ProductCard } from '../../shared/ui/ProductCard';
+import { AddToCartButton } from '../../shared/ui/AddToCartButton';
 import './ProductDetailPage.css';
 
 export function ProductDetailPage() {
@@ -69,7 +70,9 @@ export function ProductDetailPage() {
         <p className={`product-detail__stock ${product.inStock ? 'product-detail__stock--in' : 'product-detail__stock--out'}`}>
           {product.inStock ? `მარაგშია (${product.stock})` : 'არ არის მარაგში'}
         </p>
-
+        <div className="product-detail__cart-action">
+          <AddToCartButton productId={product.id} slug={product.slug} inStock={product.inStock} />
+        </div>
         {product.warrantyMonths > 0 ? (
           <p className="product-detail__warranty">გარანტია: {product.warrantyMonths} თვე</p>
         ) : null}
