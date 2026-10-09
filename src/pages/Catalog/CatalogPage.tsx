@@ -9,7 +9,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getCategory, getProducts } from '../../shared/api/catalog';
 import { buildProductsQuery } from '../../shared/lib/catalogParams';
-import { CATEGORY_SLUG, CATEGORY_DISPLAY_NAME } from '../../shared/config/category';
+import { CATEGORY_SLUG } from '../../shared/config/category';
 import { FilterPanel } from '../../shared/ui/FilterPanel/FilterPanel';
 
 export function CatalogPage() {
@@ -40,7 +40,7 @@ export function CatalogPage() {
       </aside>
 
       <div style={{ flex: 1 }}>
-        <h1>{CATEGORY_DISPLAY_NAME}</h1>
+        <h1>წიგნები</h1>
         <div className="catalog-toolbar">
         <SearchBox />
         <QuickToggles />
