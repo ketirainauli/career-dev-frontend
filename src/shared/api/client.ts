@@ -4,11 +4,13 @@ export interface ApiError {
   message: string;
   code: string;
   errors?: Record<string, string>;
+  available?: number;
 }
 
 export class ApiRequestError extends Error {
   code: string;
   errors?: Record<string, string>;
+  available?: number;
   status: number;
 
   constructor(status: number, body: ApiError) {
@@ -16,6 +18,7 @@ export class ApiRequestError extends Error {
     this.name = 'ApiRequestError';
     this.code = body.code;
     this.errors = body.errors;
+    this.available = body.available;
     this.status = status;
   }
 }
