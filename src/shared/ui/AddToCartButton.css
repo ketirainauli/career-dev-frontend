@@ -1,0 +1,16 @@
+.add-to-cart__button {
+  width: 100%;
+}
+
+.add-to-cart__message {
+  font-size: var(--font-size-sm);
+  margin: var(--space-2) 0 0 0;
+}
+
+.add-to-cart__message--success {
+  color: #16a34a;
+}
+
+.add-to-cart__message--error {
+  color: var(--color-error);
+}
