@@ -1,4 +1,5 @@
 import { onUnauthorized, ApiRequestError } from '../shared/api/client';
+import { useQueryClient } from '@tanstack/react-query';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { meRequest, type User } from '../shared/api/auth';
 import { getToken, setToken as saveToken, removeToken } from '../shared/lib/token';
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('loading');
   const [user, setUser] = useState<User | null>(null);
+    const queryClient = useQueryClient();
 
   useEffect(() => {
     const token = getToken();
@@ -41,13 +43,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
   }, []);
   
-  useEffect(() => {
+    useEffect(() => {
     onUnauthorized(() => {
       removeToken();
+      queryClient.removeQueries({ queryKey: ['cart'] });
       setUser(null);
       setStatus('unauthenticated');
     });
-  }, []);
+  }, [queryClient]);
 
   const login = (token: string, loggedInUser: User) => {
     saveToken(token);
@@ -55,8 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus('authenticated');
   };
 
-  const logout = () => {
+   const logout = () => {
     removeToken();
+    queryClient.removeQueries({ queryKey: ['cart'] });
     setUser(null);
     setStatus('unauthenticated');
   };
