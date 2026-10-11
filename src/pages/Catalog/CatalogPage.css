@@ -14,3 +14,29 @@
   flex-wrap: wrap;
   margin-bottom: var(--space-4);
 }
+.catalog-layout {
+  display: flex;
+  gap: var(--space-8);
+  padding: var(--space-8);
+  align-items: flex-start;
+}
+
+.catalog-sidebar {
+  flex-shrink: 0;
+}
+
+.catalog-content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .catalog-layout {
+    flex-direction: column;
+    padding: var(--space-4);
+  }
+
+  .catalog-sidebar {
+    width: 100%;
+  }
+}

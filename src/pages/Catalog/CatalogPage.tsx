@@ -34,12 +34,12 @@ export function CatalogPage() {
   };
 
   return (
-    <main style={{ padding: '2rem', display: 'flex', gap: '2rem' }}>
-      <aside>
+        <main className="catalog-layout">
+      <aside className="catalog-sidebar">
         {categoryQuery.data ? <FilterPanel category={categoryQuery.data} /> : <p>Loading filters...</p>}
       </aside>
 
-      <div style={{ flex: 1 }}>
+            <div className="catalog-content">
         <h1>წიგნები</h1>
         <div className="catalog-toolbar">
         <SearchBox />
