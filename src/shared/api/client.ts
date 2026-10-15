@@ -5,12 +5,14 @@ export interface ApiError {
   code: string;
   errors?: Record<string, string>;
   available?: number;
+  retryAfterSeconds?: number;
 }
 
 export class ApiRequestError extends Error {
   code: string;
   errors?: Record<string, string>;
   available?: number;
+   retryAfterSeconds?: number;
   status: number;
 
   constructor(status: number, body: ApiError) {
@@ -19,6 +21,7 @@ export class ApiRequestError extends Error {
     this.code = body.code;
     this.errors = body.errors;
     this.available = body.available;
+    this.retryAfterSeconds = body.retryAfterSeconds;
     this.status = status;
   }
 }
