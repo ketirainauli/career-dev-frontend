@@ -1,3 +1,4 @@
+import { isExpiryValid, onlyDigits, passesLuhn } from './card';
 import { z } from 'zod';
 
 export const loginSchema = z.object({
@@ -63,3 +64,28 @@ export const profileSchema = z
   });
 
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+export const checkoutSchema = z.object({
+  shipping: z.object({
+    fullName: z.string().trim().min(2, 'სახელი უნდა შედგებოდეს მინიმუმ 2 სიმბოლოსგან'),
+    phone: z
+      .string()
+      .trim()
+      .min(9, 'შეიყვანეთ ვალიდური ტელეფონის ნომერი')
+      .max(20, 'შეიყვანეთ ვალიდური ტელეფონის ნომერი'),
+    city: z.string().trim().min(1, 'ქალაქი სავალდებულოა'),
+    address: z.string().trim().min(5, 'მისამართი უნდა შედგებოდეს მინიმუმ 5 სიმბოლოსგან'),
+  }),
+  card: z.object({
+    number: z
+      .string()
+      .refine((v) => onlyDigits(v).length >= 13 && onlyDigits(v).length <= 19, {
+        message: 'შეიყვანეთ ბარათის ვალიდური ნომერი',
+      })
+      .refine((v) => passesLuhn(v), { message: 'შეიყვანეთ ბარათის ვალიდური ნომერი' }),
+    holder: z.string().trim().min(2, 'შეიყვანეთ ბარათის მფლობელის სახელი'),
+    expiry: z.string().refine(isExpiryValid, { message: 'ბარათის ვადა არასწორია ან გასულია' }),
+    cvc: z.string().regex(/^\d{3,4}$/, 'CVC უნდა იყოს 3 ან 4 ციფრი'),
+  }),
+});
+
+export type CheckoutFormValues = z.infer<typeof checkoutSchema>;
