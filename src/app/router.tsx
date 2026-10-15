@@ -1,3 +1,4 @@
+import { CheckoutPage } from '../pages/Checkout/CheckoutPage';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { LoginPage } from '../pages/auth/Login/LoginPage';
 import { RegisterPage } from '../pages/auth/Register/RegisterPage';
@@ -41,6 +42,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <CartPage />
+          </ProtectedRoute>
+        ),
+      },
+            {
+        path: '/checkout',
+        element: (
+          <ProtectedRoute>
+            <CheckoutPage />
           </ProtectedRoute>
         ),
       },
