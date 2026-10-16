@@ -86,3 +86,12 @@
   margin: 0 0 var(--space-4) 0;
   font-size: var(--font-size-lg);
 }
+.checkout-section-title--spaced {
+  margin-top: var(--space-6);
+}
+
+.checkout-card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}

@@ -1,3 +1,5 @@
+import { Controller } from 'react-hook-form';
+import { formatCardNumber, formatExpiry, onlyDigits } from '../../shared/lib/card';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,8 +19,9 @@ export function CheckoutPage() {
     queryFn: () => getCheckoutRequest(getToken()!),
     refetchOnMount: 'always',
   });
-    const {
+      const {
     register,
+    control,
     reset,
     handleSubmit,
     formState: { errors },
@@ -42,9 +45,9 @@ export function CheckoutPage() {
     }
   }, [checkoutQuery.data, reset]);
 
-  const onSubmit = (values: CheckoutFormValues) => {
-    // Payment comes in the next step. For now we only check validation works.
-    // The card data is never logged: only the shipping part is printed.
+   const onSubmit = (values: CheckoutFormValues) => {
+    // Sending the order comes in the next step.
+    // Card data is never logged: only the shipping part is printed.
     console.log('shipping', values.shipping);
   };
 
@@ -84,7 +87,7 @@ export function CheckoutPage() {
 
       <div className="checkout-layout">
                <section className="checkout-main">
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                   <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <h2 className="checkout-section-title">მიწოდება</h2>
 
             <FormField label="სრული სახელი" error={errors.shipping?.fullName?.message}>
@@ -108,7 +111,72 @@ export function CheckoutPage() {
               <Input type="text" autoComplete="street-address" {...register('shipping.address')} />
             </FormField>
 
-            <Button type="submit">გაგრძელება</Button>
+            <h2 className="checkout-section-title checkout-section-title--spaced">ბარათი</h2>
+
+            <FormField label="ბარათის ნომერი" error={errors.card?.number?.message}>
+              <Controller
+                control={control}
+                name="card.number"
+                render={({ field }) => (
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="cc-number"
+                    placeholder="4242 4242 4242 4242"
+                    value={field.value}
+                    onChange={(e) => field.onChange(formatCardNumber(e.target.value))}
+                    onBlur={field.onBlur}
+                    ref={field.ref}
+                  />
+                )}
+              />
+            </FormField>
+
+            <FormField label="ბარათის მფლობელი" error={errors.card?.holder?.message}>
+              <Input type="text" autoComplete="cc-name" {...register('card.holder')} />
+            </FormField>
+
+            <div className="checkout-card-row">
+              <FormField label="ვადა (MM/YY)" error={errors.card?.expiry?.message}>
+                <Controller
+                  control={control}
+                  name="card.expiry"
+                  render={({ field }) => (
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="cc-exp"
+                      placeholder="MM/YY"
+                      value={field.value}
+                      onChange={(e) => field.onChange(formatExpiry(e.target.value))}
+                      onBlur={field.onBlur}
+                      ref={field.ref}
+                    />
+                  )}
+                />
+              </FormField>
+
+              <FormField label="CVC" error={errors.card?.cvc?.message}>
+                <Controller
+                  control={control}
+                  name="card.cvc"
+                  render={({ field }) => (
+                    <Input
+                      type="password"
+                      inputMode="numeric"
+                      autoComplete="cc-csc"
+                      maxLength={4}
+                      value={field.value}
+                      onChange={(e) => field.onChange(onlyDigits(e.target.value))}
+                      onBlur={field.onBlur}
+                      ref={field.ref}
+                    />
+                  )}
+                />
+              </FormField>
+            </div>
+
+            <Button type="submit">გადახდა</Button>
           </form>
         </section>
 
