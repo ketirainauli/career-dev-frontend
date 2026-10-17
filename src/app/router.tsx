@@ -1,3 +1,4 @@
+import { CheckoutConfirmPage } from '../pages/Checkout/CheckoutConfirmPage';
 import { CheckoutPage } from '../pages/Checkout/CheckoutPage';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { LoginPage } from '../pages/auth/Login/LoginPage';
@@ -50,6 +51,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <CheckoutPage />
+          </ProtectedRoute>
+        ),
+      },
+            {
+        path: '/checkout/confirm/:orderId',
+        element: (
+          <ProtectedRoute>
+            <CheckoutConfirmPage />
           </ProtectedRoute>
         ),
       },
