@@ -1,28 +1,37 @@
-import { Controller } from 'react-hook-form';
-import { formatCardNumber, formatExpiry, onlyDigits } from '../../shared/lib/card';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { checkoutSchema, type CheckoutFormValues } from '../../shared/lib/validation';
-import { Input } from '../../shared/ui/Input';
-import { FormField } from '../../shared/ui/FormField';
 import { useQuery } from '@tanstack/react-query';
-import { Navigate } from 'react-router-dom';
-import { getCheckoutRequest } from '../../shared/api/checkout';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { createOrderRequest, getCheckoutRequest } from '../../shared/api/checkout';
+import { ApiRequestError } from '../../shared/api/client';
+import { formatCardNumber, formatExpiry, onlyDigits } from '../../shared/lib/card';
 import { getToken } from '../../shared/lib/token';
+import { checkoutSchema, type CheckoutFormValues } from '../../shared/lib/validation';
+import { Alert } from '../../shared/ui/Alert';
 import { Button } from '../../shared/ui/Button';
+import { FormField } from '../../shared/ui/FormField';
+import { Input } from '../../shared/ui/Input';
 import './CheckoutPage.css';
 
 export function CheckoutPage() {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [cardBanner, setCardBanner] = useState<string | null>(null);
+  const [stockProblem, setStockProblem] = useState(false);
+
   const checkoutQuery = useQuery({
     queryKey: ['checkout'],
     queryFn: () => getCheckoutRequest(getToken()!),
     refetchOnMount: 'always',
   });
-      const {
+
+  const {
     register,
     control,
     reset,
+    setError,
+    resetField,
     handleSubmit,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
@@ -45,10 +54,44 @@ export function CheckoutPage() {
     }
   }, [checkoutQuery.data, reset]);
 
-   const onSubmit = (values: CheckoutFormValues) => {
-    // Sending the order comes in the next step.
-    // Card data is never logged: only the shipping part is printed.
-    console.log('shipping', values.shipping);
+  const onSubmit = async (values: CheckoutFormValues) => {
+    if (isSubmitting) return;
+    setCardBanner(null);
+    setStockProblem(false);
+    setIsSubmitting(true);
+
+    try {
+      const data = await createOrderRequest(
+        { shipping: values.shipping, card: values.card },
+        getToken()!
+      );
+      // Card data must not survive the request
+      resetField('card.number', { defaultValue: '' });
+      resetField('card.holder', { defaultValue: '' });
+      resetField('card.expiry', { defaultValue: '' });
+      resetField('card.cvc', { defaultValue: '' });
+      navigate(`/checkout/confirm/${data.orderId}`);
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        if (err.code === 'CARD_DECLINED') {
+          setCardBanner('ბარათი უარყოფილია, სცადეთ სხვა ბარათი');
+        } else if (err.code === 'CART_EMPTY') {
+          navigate('/cart', { replace: true });
+        } else if (err.code === 'INSUFFICIENT_STOCK') {
+          setStockProblem(true);
+        } else if (err.errors) {
+          for (const [field, message] of Object.entries(err.errors)) {
+            setError(field as 'card.number', { message });
+          }
+        } else {
+          setCardBanner('დაფიქსირდა შეცდომა. სცადეთ ხელახლა.');
+        }
+      } else {
+        setCardBanner('დაფიქსირდა შეცდომა. სცადეთ ხელახლა.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (checkoutQuery.isPending) {
@@ -86,8 +129,8 @@ export function CheckoutPage() {
       <h1 className="checkout-page__title">ჩექაუთი</h1>
 
       <div className="checkout-layout">
-               <section className="checkout-main">
-                   <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <section className="checkout-main">
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <h2 className="checkout-section-title">მიწოდება</h2>
 
             <FormField label="სრული სახელი" error={errors.shipping?.fullName?.message}>
@@ -112,6 +155,21 @@ export function CheckoutPage() {
             </FormField>
 
             <h2 className="checkout-section-title checkout-section-title--spaced">ბარათი</h2>
+
+            {cardBanner ? (
+              <div className="checkout-banner">
+                <Alert variant="error">{cardBanner}</Alert>
+              </div>
+            ) : null}
+
+            {stockProblem ? (
+              <div className="checkout-banner">
+                <Alert variant="error">
+                  ზოგი პროდუქტი აღარ არის საკმარისი რაოდენობით.{' '}
+                  <Link to="/cart">გადადით კალათაში</Link>
+                </Alert>
+              </div>
+            ) : null}
 
             <FormField label="ბარათის ნომერი" error={errors.card?.number?.message}>
               <Controller
@@ -176,7 +234,9 @@ export function CheckoutPage() {
               </FormField>
             </div>
 
-            <Button type="submit">გადახდა</Button>
+            <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting}>
+              გადახდა
+            </Button>
           </form>
         </section>
 

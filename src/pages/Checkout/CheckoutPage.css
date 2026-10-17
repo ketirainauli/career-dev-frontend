@@ -95,3 +95,6 @@
   grid-template-columns: 1fr 1fr;
   gap: var(--space-4);
 }
+.checkout-banner {
+  margin-bottom: var(--space-4);
+}
