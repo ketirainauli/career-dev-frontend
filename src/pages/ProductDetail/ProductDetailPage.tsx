@@ -1,48 +1,80 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getProduct } from '../../shared/api/catalog';
-import { ProductCard } from '../../shared/ui/ProductCard';
+import { getProduct, type ProductDetail } from '../../shared/api/catalog';
+import { ApiRequestError } from '../../shared/api/client';
 import { AddToCartButton } from '../../shared/ui/AddToCartButton';
+import { Button } from '../../shared/ui/Button';
+import { ProductCard } from '../../shared/ui/ProductCard';
 import './ProductDetailPage.css';
 
-export function ProductDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
+function ProductDetailSkeleton() {
+  return (
+    <main className="product-detail" aria-busy="true">
+      <div>
+        <div className="product-detail__skeleton product-detail__skeleton--image" />
+        <div className="product-detail__skeleton product-detail__skeleton--thumbs" />
+      </div>
+      <div>
+        <div className="product-detail__skeleton product-detail__skeleton--line-short" />
+        <div className="product-detail__skeleton product-detail__skeleton--line" />
+        <div className="product-detail__skeleton product-detail__skeleton--line-short" />
+        <div className="product-detail__skeleton product-detail__skeleton--line" />
+      </div>
+    </main>
+  );
+}
+
+function stockText(product: ProductDetail): string {
+  if (!product.inStock) return 'ამოწურულია';
+  if (product.stock <= 5) return `დარჩა მხოლოდ ${product.stock}`;
+  return 'მარაგშია';
+}
+
+function ProductDetailContent({ product }: { product: ProductDetail }) {
   const [activeImage, setActiveImage] = useState(0);
 
-  const productQuery = useQuery({
-    queryKey: ['product', slug],
-    queryFn: () => getProduct(slug!),
-    enabled: !!slug,
-  });
+  useEffect(() => {
+    document.title = `${product.title} — წიგნების მაღაზია`;
+    window.scrollTo(0, 0);
+  }, [product.title]);
 
-  if (productQuery.isPending) return <p style={{ padding: '2rem' }}>Loading...</p>;
-  if (productQuery.isError) return <p style={{ padding: '2rem' }}>ვერ ჩაიტვირთა</p>;
-
-  const product = productQuery.data;
+  const images = product.images.length > 0 ? product.images : [product.image];
 
   return (
     <main className="product-detail">
+      <nav className="product-detail__breadcrumbs" aria-label="Breadcrumbs">
+        <Link to="/catalog">მთავარი</Link>
+        <span aria-hidden="true"> / </span>
+        <Link to="/catalog">{product.category.name}</Link>
+        <span aria-hidden="true"> / </span>
+        <span>{product.title}</span>
+      </nav>
+
       <div className="product-detail__gallery">
         <div className="product-detail__main-image-wrap">
           <img
-            src={product.images[activeImage]}
+            src={images[activeImage]}
             alt={product.title}
             className="product-detail__main-image"
           />
         </div>
-        <div className="product-detail__thumbnails">
-          {product.images.map((img, i) => (
-            <button
-              key={img + i}
-              type="button"
-              className={`product-detail__thumb ${i === activeImage ? 'product-detail__thumb--active' : ''}`}
-              onClick={() => setActiveImage(i)}
-            >
-              <img src={img} alt={`${product.title} ${i + 1}`} loading="lazy" />
-            </button>
-          ))}
-        </div>
+        {images.length > 1 ? (
+          <div className="product-detail__thumbnails">
+            {images.map((img, i) => (
+              <button
+                key={img + i}
+                type="button"
+                className={`product-detail__thumb ${i === activeImage ? 'product-detail__thumb--active' : ''}`}
+                onClick={() => setActiveImage(i)}
+                aria-label={`${product.title} — სურათი ${i + 1} / ${images.length}`}
+                aria-pressed={i === activeImage}
+              >
+                <img src={img} alt="" loading="lazy" />
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className="product-detail__info">
@@ -67,15 +99,19 @@ export function ProductDetailPage() {
           ) : null}
         </div>
 
-        <p className={`product-detail__stock ${product.inStock ? 'product-detail__stock--in' : 'product-detail__stock--out'}`}>
-          {product.inStock ? `მარაგშია (${product.stock})` : 'არ არის მარაგში'}
+        <p
+          className={`product-detail__stock ${product.inStock ? 'product-detail__stock--in' : 'product-detail__stock--out'}`}
+        >
+          {stockText(product)}
         </p>
-        <div className="product-detail__cart-action">
-          <AddToCartButton productId={product.id} slug={product.slug} inStock={product.inStock} />
-        </div>
+
         {product.warrantyMonths > 0 ? (
           <p className="product-detail__warranty">გარანტია: {product.warrantyMonths} თვე</p>
         ) : null}
+
+        <div className="product-detail__cart-action">
+          <AddToCartButton productId={product.id} slug={product.slug} inStock={product.inStock} />
+        </div>
 
         <p className="product-detail__description">{product.description}</p>
 
@@ -104,4 +140,49 @@ export function ProductDetailPage() {
       ) : null}
     </main>
   );
+}
+
+export function ProductDetailPage() {
+  const { slug } = useParams<{ slug: string }>();
+
+  const productQuery = useQuery({
+    queryKey: ['product', slug],
+    queryFn: () => getProduct(slug!),
+    enabled: !!slug,
+    retry: (failureCount, error) =>
+      !(error instanceof ApiRequestError && error.status === 404) && failureCount < 1,
+  });
+
+  if (productQuery.isPending) {
+    return <ProductDetailSkeleton />;
+  }
+
+  if (productQuery.isError) {
+    const notFound =
+      productQuery.error instanceof ApiRequestError && productQuery.error.status === 404;
+
+    return (
+      <main className="product-detail-message">
+        {notFound ? (
+          <>
+            <h1>პროდუქტი ვერ მოიძებნა</h1>
+            <Link to="/catalog" className="btn btn--primary">
+              კატალოგში დაბრუნება
+            </Link>
+          </>
+        ) : (
+          <>
+            <p>ვერ ჩაიტვირთა</p>
+            <Button type="button" onClick={() => productQuery.refetch()}>
+              თავიდან ცდა
+            </Button>
+          </>
+        )}
+      </main>
+    );
+  }
+
+  // key={slug}: when the slug changes, React builds a fresh component,
+  // so the gallery index and other local state start from zero.
+  return <ProductDetailContent key={productQuery.data.slug} product={productQuery.data} />;
 }
