@@ -33,6 +33,8 @@ function stockText(product: ProductDetail): string {
 
 function ProductDetailContent({ product }: { product: ProductDetail }) {
   const [activeImage, setActiveImage] = useState(0);
+  const [qty, setQty] = useState(1);
+  const maxQty = Math.min(product.stock, 99);
 
   useEffect(() => {
     document.title = `${product.title} — წიგნების მაღაზია`;
@@ -109,8 +111,37 @@ function ProductDetailContent({ product }: { product: ProductDetail }) {
           <p className="product-detail__warranty">გარანტია: {product.warrantyMonths} თვე</p>
         ) : null}
 
-        <div className="product-detail__cart-action">
-          <AddToCartButton productId={product.id} slug={product.slug} inStock={product.inStock} />
+                <div className="product-detail__cart-action">
+          <div className="qty-stepper">
+            <button
+              type="button"
+              className="qty-stepper__button"
+              aria-label="რაოდენობის შემცირება"
+              disabled={!product.inStock || qty <= 1}
+              onClick={() => setQty((q) => q - 1)}
+            >
+              −
+            </button>
+            <span className="qty-stepper__value" aria-live="polite">
+              {qty}
+            </span>
+            <button
+              type="button"
+              className="qty-stepper__button"
+              aria-label="რაოდენობის გაზრდა"
+              disabled={!product.inStock || qty >= maxQty}
+              onClick={() => setQty((q) => q + 1)}
+            >
+              +
+            </button>
+          </div>
+          <AddToCartButton
+            productId={product.id}
+            slug={product.slug}
+            inStock={product.inStock}
+            qty={qty}
+            showCartLink
+          />
         </div>
 
         <p className="product-detail__description">{product.description}</p>

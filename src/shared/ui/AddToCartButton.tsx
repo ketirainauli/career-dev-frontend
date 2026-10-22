@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../app/AuthContext';
 import { useCart } from '../lib/useCart';
 import { ApiRequestError } from '../api/client';
@@ -10,9 +10,17 @@ interface AddToCartButtonProps {
   productId: string; // the product id, not the slug
   slug: string;
   inStock: boolean;
+  qty?: number;
+  showCartLink?: boolean;
 }
 
-export function AddToCartButton({ productId, slug, inStock }: AddToCartButtonProps) {
+export function AddToCartButton({
+  productId,
+  slug,
+  inStock,
+  qty = 1,
+  showCartLink = false,
+}: AddToCartButtonProps) {
   const { status } = useAuth();
   const { addItem } = useCart();
   const navigate = useNavigate();
@@ -28,7 +36,7 @@ export function AddToCartButton({ productId, slug, inStock }: AddToCartButtonPro
 
     setMessage(null);
     addItem.mutate(
-      { productId, qty: 1 },
+      { productId, qty },
       {
         onSuccess: () => setMessage({ text: 'დაემატა კალათაში', type: 'success' }),
         onError: (err) => {
@@ -60,6 +68,12 @@ export function AddToCartButton({ productId, slug, inStock }: AddToCartButtonPro
       {message ? (
         <p role="status" className={`add-to-cart__message add-to-cart__message--${message.type}`}>
           {message.text}
+          {message.type === 'success' && showCartLink ? (
+            <>
+              {' '}
+              <Link to="/cart">კალათის ნახვა</Link>
+            </>
+          ) : null}
         </p>
       ) : null}
     </div>
