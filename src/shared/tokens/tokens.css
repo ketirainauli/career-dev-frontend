@@ -1,16 +1,41 @@
 :root {
-  /* Color */
+  color-scheme: light;
+
+  /* Color: brand */
   --color-primary: #4F46E5;
   --color-primary-hover: #4338CA;
+  --color-on-primary: #FFFFFF;
+
+  /* Color: text, borders, surfaces */
   --color-text: #111827;
   --color-text-muted: #6B7280;
   --color-border: #D1D5DB;
   --color-border-focus: #4F46E5;
+  --color-bg: #FFFFFF;
+  --color-bg-page: #F9FAFB;
+
+  /* Color: states */
   --color-error: #DC2626;
   --color-error-bg: #FEF2F2;
+  --color-error-border: #FCA5A5;
+  --color-on-error: #FFFFFF;
+  --color-success: #15803D;
+  --color-success-bg: #ECFDF5;
+  --color-success-text: #065F46;
+  --color-success-border: #A7F3D0;
+  --color-info-bg: #EFF6FF;
+  --color-info-text: #1E40AF;
+  --color-info-border: #BFDBFE;
   --color-disabled-bg: #F3F4F6;
   --color-disabled-text: #9CA3AF;
-  --color-bg: #FFFFFF;
+
+  /* Color: overlays and effects */
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --color-on-overlay: #FFFFFF;
+  --color-spinner-track: rgba(255, 255, 255, 0.4);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.3);
+  --focus-ring-error: 0 0 0 3px rgba(220, 38, 38, 0.15);
 
   /* Spacing */
   --space-1: 4px;
@@ -34,7 +59,40 @@
 
   /* Input sizing */
   --input-height: 44px;
+}
 
-  /* Focus ring */
-  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.3);
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-primary: #818CF8;
+  --color-primary-hover: #A5B4FC;
+  --color-on-primary: #0F172A;
+
+  --color-text: #F3F4F6;
+  --color-text-muted: #9CA3AF;
+  --color-border: #374151;
+  --color-border-focus: #818CF8;
+  --color-bg: #111827;
+  --color-bg-page: #0B1120;
+
+  --color-error: #F87171;
+  --color-error-bg: #2A1215;
+  --color-error-border: #7F1D1D;
+  --color-on-error: #111827;
+  --color-success: #4ADE80;
+  --color-success-bg: #052E1C;
+  --color-success-text: #6EE7B7;
+  --color-success-border: #065F46;
+  --color-info-bg: #0F1E3D;
+  --color-info-text: #93C5FD;
+  --color-info-border: #1E3A8A;
+  --color-disabled-bg: #1F2937;
+  --color-disabled-text: #6B7280;
+
+  --color-overlay: rgba(0, 0, 0, 0.75);
+  --color-on-overlay: #FFFFFF;
+  --color-spinner-track: rgba(15, 23, 42, 0.3);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.5);
+  --focus-ring-error: 0 0 0 3px rgba(248, 113, 113, 0.35);
 }
