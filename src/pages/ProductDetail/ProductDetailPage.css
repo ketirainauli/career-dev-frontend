@@ -83,7 +83,7 @@
 
 .product-detail__discount {
   background-color: var(--color-error);
-  color: #fff;
+ color: var(--color-on-error);
   padding: 2px var(--space-2);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-sm);
@@ -95,7 +95,7 @@
 }
 
 .product-detail__stock--in {
-  color: #16a34a;
+ color: var(--color-success);
 }
 
 .product-detail__stock--out {

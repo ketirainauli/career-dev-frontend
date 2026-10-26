@@ -8,7 +8,7 @@
 }
 
 .add-to-cart__message--success {
-  color: #16a34a;
+ color: var(--color-success);
 }
 
 .add-to-cart__message--error {
