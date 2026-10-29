@@ -1,75 +1,83 @@
-import { OrderPage } from '../pages/Orders/OrderPage';
-import { CheckoutConfirmPage } from '../pages/Checkout/CheckoutConfirmPage';
-import { CheckoutPage } from '../pages/Checkout/CheckoutPage';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { LoginPage } from '../pages/auth/Login/LoginPage';
-import { RegisterPage } from '../pages/auth/Register/RegisterPage';
-import { ForgotPasswordPage } from '../pages/auth/ForgotPassword/ForgotPasswordPage';
-import { DashboardPage } from '../pages/Dashboard/DashboardPage';
-import { CatalogPage } from '../pages/Catalog/CatalogPage';
-import { ProductDetailPage } from '../pages/ProductDetail/ProductDetailPage';
-import { ProfilePage } from '../pages/Profile/ProfilePage';
+import { Layout, RootBoundary } from './Layout';
 import { ProtectedRoute } from './ProtectedRoute';
-import { CartPage } from '../pages/Cart/CartPage';
-import { Layout } from './Layout';
+import {
+  CartPage,
+  CatalogPage,
+  CheckoutConfirmPage,
+  CheckoutPage,
+  DashboardPage,
+  ForgotPasswordPage,
+  LoginPage,
+  OrderPage,
+  ProductDetailPage,
+  ProfilePage,
+  RegisterPage,
+} from './lazyPages';
+
 
 export const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/login" replace /> },
-  { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <RegisterPage /> },
-  { path: '/forgot-password', element: <ForgotPasswordPage /> },
   {
-    element: <Layout />,
+    element: <RootBoundary />,
     children: [
-      { path: '/catalog', element: <CatalogPage /> },
-      { path: '/product/:slug', element: <ProductDetailPage /> },
+      { path: '/', element: <Navigate to="/login" replace /> },
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
       {
-        path: '/dashboard',
-        element: (
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/profile',
-        element: (
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        ),
-      },
-            {
-        path: '/cart',
-        element: (
-          <ProtectedRoute>
-            <CartPage />
-          </ProtectedRoute>
-        ),
-      },
-            {
-        path: '/checkout',
-        element: (
-          <ProtectedRoute>
-            <CheckoutPage />
-          </ProtectedRoute>
-        ),
-      },
-            {
-        path: '/checkout/confirm/:orderId',
-        element: (
-          <ProtectedRoute>
-            <CheckoutConfirmPage />
-          </ProtectedRoute>
-        ),
-      },
-            {
-        path: '/orders/:id',
-        element: (
-          <ProtectedRoute>
-            <OrderPage />
-          </ProtectedRoute>
-        ),
+        element: <Layout />,
+        children: [
+          { path: '/catalog', element: <CatalogPage /> },
+          { path: '/product/:slug', element: <ProductDetailPage /> },
+          {
+            path: '/dashboard',
+            element: (
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: '/profile',
+            element: (
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: '/cart',
+            element: (
+              <ProtectedRoute>
+                <CartPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: '/checkout',
+            element: (
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: '/checkout/confirm/:orderId',
+            element: (
+              <ProtectedRoute>
+                <CheckoutConfirmPage />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: '/orders/:id',
+            element: (
+              <ProtectedRoute>
+                <OrderPage />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
     ],
   },
