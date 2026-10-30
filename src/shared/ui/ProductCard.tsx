@@ -5,9 +5,10 @@ import './ProductCard.css';
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <div className="product-card">
       <Link to={`/product/${product.slug}`} className="product-card__link">
@@ -15,7 +16,10 @@ export function ProductCard({ product }: ProductCardProps) {
           <img
             src={product.image}
             alt={product.title}
-            loading="lazy"
+            width={700}
+            height={700}
+            loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : undefined}
             className="product-card__image"
           />
           {product.discountPercent ? (

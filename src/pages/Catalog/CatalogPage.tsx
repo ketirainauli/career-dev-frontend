@@ -18,7 +18,9 @@ export function CatalogPage() {
   const categoryQuery = useQuery({
     queryKey: ['category', CATEGORY_SLUG],
     queryFn: () => getCategory(CATEGORY_SLUG),
+    staleTime: 10 * 60 * 1000,
   });
+ 
 
   const queryString = buildProductsQuery(searchParams);
 
@@ -84,8 +86,8 @@ export function CatalogPage() {
                 className="product-grid"
                 style={{ opacity: productsQuery.isFetching ? 0.5 : 1, transition: 'opacity 0.15s ease' }}
               >
-                {productsQuery.data.items.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                               {productsQuery.data.items.map((product, index) => (
+                  <ProductCard key={product.id} product={product} priority={index < 4} />
                 ))}
               </div>
               <Pagination

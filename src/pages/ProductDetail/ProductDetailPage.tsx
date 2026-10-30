@@ -55,9 +55,12 @@ function ProductDetailContent({ product }: { product: ProductDetail }) {
 
       <div className="product-detail__gallery">
         <div className="product-detail__main-image-wrap">
-          <img
+                    <img
             src={images[activeImage]}
             alt={product.title}
+            width={700}
+            height={700}
+            fetchPriority="high"
             className="product-detail__main-image"
           />
         </div>
@@ -213,7 +216,6 @@ export function ProductDetailPage() {
     );
   }
 
-  // key={slug}: when the slug changes, React builds a fresh component,
-  // so the gallery index and other local state start from zero.
+  
   return <ProductDetailContent key={productQuery.data.slug} product={productQuery.data} />;
 }
